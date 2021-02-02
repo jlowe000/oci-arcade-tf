@@ -10,7 +10,7 @@ variables:
 
   is_free_tier:
     type: boolean
-    title: "Generate API Key"
+    title: "Enable Free-Tier ADW"
     required: true
     default: true
     visible: true
@@ -86,4 +86,4 @@ variables:
     type: password
     confirmation: true
     required: true
-    title: ADW Password"
+    title: "ADW Password"
