@@ -9,3 +9,4 @@ variable compartment_ocid { default = "ocid1.compartment.oc1..XXXX" }
 variable tenancy_ocid { default = "ocid1.compartment.oc1..XXXX" }
 variable custom_ssh_key { default = "ssh-rsa XXXX" }
 variable custom_adb_admin_password { default = "WelcomeTiger123" }
+variable git_repo { default = "https://github.com/jlowe000/oci-arcade.git --branch free-tier" }

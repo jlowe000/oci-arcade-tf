@@ -3,9 +3,10 @@ ORDS_HOSTNAME=`echo $2 | cut -d "/" -f 3`
 API_HOSTNAME=$3
 API_KEY_ENABLED=$4
 BUCKET_NS=$5
+GIT_REPO=$6
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
-git clone https://github.com/jlowe000/oci-arcade.git
+git clone ${GIT_REPO}
 pip3 install oci --user
 cd /home/oracle/wallet/
 unzip /home/oracle/wallet/arcade-wallet.zip
