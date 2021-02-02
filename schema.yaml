@@ -110,6 +110,5 @@ variables:
 
   custom_adb_admin_password:
     type: password
-    confirmation: true
     required: true
     title: "ADW Password"
