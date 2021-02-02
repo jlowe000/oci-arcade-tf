@@ -34,7 +34,7 @@ variableGroups:
 variables:
   is_free_tier:
     type: boolean
-    title: "Generate API Key"
+    title: "ADW Free Tier"
     required: true
     default: true
     visible: true
