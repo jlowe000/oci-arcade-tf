@@ -57,7 +57,7 @@ variables:
     title: "Arcade Web Compute Image"
 
   compute_shape:
-    type: oci:ods:instanceshape:name
+    type: oci:core:instanceshape:name
     description: Select a shape
     dependsOn:
       compartmentId: ${compartment_ocid}
