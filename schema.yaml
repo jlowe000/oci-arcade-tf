@@ -51,7 +51,6 @@ variables:
     dependsOn:
       compartmentId: ${compartment_ocid}
       operatingSystem: "Oracle Linux"      
-      operatingSystemVersion: "7"
     required: true
     visible: true
     title: "Arcade Web Compute Image"
