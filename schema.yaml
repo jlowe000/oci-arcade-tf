@@ -6,7 +6,7 @@ schemaVersion: 1.1.0
 version: "20200301"
 locale: "en"
 
-  variableGroups:
+variableGroups:
   - title: "General Configuration"
     visible: false
     variables:
@@ -31,85 +31,85 @@ locale: "en"
     - enable_api_key
     - user_id
     
-  variables:
-    is_free_tier:
-      type: boolean
-      title: "Generate API Key"
-      required: true
-      default: true
-      visible: true
+variables:
+  is_free_tier:
+    type: boolean
+    title: "Generate API Key"
+    required: true
+    default: true
+    visible: true
 
-    enable_api_key:
-      type: boolean
-      title: "Generate API Key"
-      required: true
-      default: true
-      visible: true
+  enable_api_key:
+    type: boolean
+    title: "Generate API Key"
+    required: true
+    default: true
+    visible: true
 
-    arcade-web_source_image_id:
-      type: oci:core:image:id
-      dependsOn:
-        compartmentId: ${compartment_ocid}
-        operatingSystem: "Oracle Linux"      
-        operatingSystemVersion: "7.8"
-      required: true
-      visible: true
-      title: "Arcade Web Compute Image"
+  arcade-web_source_image_id:
+    type: oci:core:image:id
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      operatingSystem: "Oracle Linux"      
+      operatingSystemVersion: "7.8"
+    required: true
+    visible: true
+    title: "Arcade Web Compute Image"
 
-    compute_shape:
-      type: oci:ods:instanceshape:name
-      description: Select a shape
-      dependsOn:
-        compartmentId: ${compartment_ocid}
-      title: "Arcade Web Compute"
-      required: true
-      default: "VM.Standard.E2.1.Micro"
-      visible: true
+  compute_shape:
+    type: oci:ods:instanceshape:name
+    description: Select a shape
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+    title: "Arcade Web Compute"
+    required: true
+    default: "VM.Standard.E2.1.Micro"
+    visible: true
 
-    region:
-      type: oci:identity:region:name
-      required: true
-      visible: true
+  region:
+    type: oci:identity:region:name
+    required: true
+    visible: true
 
-    compartment_ocid:
-      type: oci:identity:compartment:id
-      required: true
-      title: "Compartment"
-      visible: true
+  compartment_ocid:
+    type: oci:identity:compartment:id
+    required: true
+    title: "Compartment"
+    visible: true
 
-    tenancy_ocid:
-      type: string
-      required: true
-      title: "Tenancy"
-      visible: true
+  tenancy_ocid:
+    type: string
+    required: true
+    title: "Tenancy"
+    visible: true
 
-    user_id:
-      type: string
-      required: true
-      title: "User"
-      visible: true
+  user_id:
+    type: string
+    required: true
+    title: "User"
+    visible: true
 
-    custom_ssh_key:
-      type: oci:core:ssh:publickey
-      required: true
-      default: [""]
-      pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
-      title: "Arcade Web Compute SSH Key"
+  custom_ssh_key:
+    type: oci:core:ssh:publickey
+    required: true
+    default: [""]
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+    title: "Arcade Web Compute SSH Key"
 
-    bucket_ns:
-      type: string
-      required: true
-      title: "Bucket Namespace"
-      visible: true
+  bucket_ns:
+    type: string
+    required: true
+    title: "Bucket Namespace"
+    visible: true
 
-    git_repo:
-      type: string
-      required: true
-      title: "GIT Repository URL"
-      visible: true
+  git_repo:
+    type: string
+    required: true
+    title: "GIT Repository URL"
+    visible: true
 
-    custom_adb_admin_password:
-      type: password
-      confirmation: true
-      required: true
-      title: "ADW Password"
+  custom_adb_admin_password:
+    type: password
+    confirmation: true
+    required: true
+    title: "ADW Password"
