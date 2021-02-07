@@ -15,6 +15,7 @@ echo "SSL_SERVER_DN_MATCH=yes" >> /home/oracle/wallet/sqlnet.ora
 echo "create user ociarcade identified by ${USER_PWD};" > /home/oracle/repos/oci-arcade/infra/db/schema.sql
 echo "grant resource, connect, unlimited tablespace to ociarcade;" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
 cd /home/oracle/repos/oci-arcade
+echo 'export BUCKET_NS=${BUCKET_NS}' >> ~/.bash_profile
 echo 'export TNS_ADMIN=/home/oracle/wallet' >> ~/.bash_profile
 echo 'export ORACLE_HOME=/usr/lib/oracle/18.3/client64' >> ~/.bash_profile
 echo 'export LD_LIBRARY_PATH=${ORACLE_HOME}/lib' >> ~/.bash_profile
@@ -29,8 +30,13 @@ chmod 755 bin/*.sh
 bin/oci-fn-run.sh
 bin/oci-fn-build.sh
 bin/api-events-serverless-deploy.sh ${ORDS_HOSTNAME}
+cp apis/events/kafka/event-producer/python/func.yaml.template apis/events/kafka/event-producer/python/func.yaml
+bin/api-events-kafka-deploy.sh
+# I don't know why but the bootstrap servers are not found unless deploying this twice.
+bin/api-events-kafka-deploy.sh
 bin/api-score-docker-build.sh ${ORDS_HOSTNAME} ${USER_PWD}
 bin/api-score-docker-run.sh
+docker network inspect arcade_network
 if [ "${API_KEY_ENABLED}" == "true" ]; then
   bin/oci-arcade-storage-build.sh ${API_HOSTNAME} ${BUCKET_NS}
 fi

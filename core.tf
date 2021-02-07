@@ -3,7 +3,14 @@
 resource tls_private_key public_private_key_pair {
   algorithm   = "RSA"
 }
+resource local_file ssh_key_private {
+  content  = tls_private_key.public_private_key_pair.private_key_pem
+  filename = "${path.module}/id_rsa"
 
+  provisioner local-exec {
+    command = "chmod 600 ${path.module}/id_rsa"
+  }
+}
 resource oci_core_instance export_arcade-web {
   agent_config {
     is_management_disabled = "false"
@@ -29,6 +36,59 @@ resource oci_core_instance export_arcade-web {
   }
   #dedicated_vm_host_id = <<Optional value not found in discovery>>
   display_name = "arcade-web"
+  extended_metadata = {
+  }
+  fault_domain = "FAULT-DOMAIN-1"
+  freeform_tags = {
+  }
+  #ipxe_script = <<Optional value not found in discovery>>
+  #is_pv_encryption_in_transit_enabled = <<Optional value not found in discovery>>
+  launch_options {
+    boot_volume_type                    = "PARAVIRTUALIZED"
+    firmware                            = "UEFI_64"
+    is_consistent_volume_naming_enabled = "true"
+    # is_pv_encryption_in_transit_enabled = "false"
+    network_type                        = "PARAVIRTUALIZED"
+    remote_data_volume_type             = "PARAVIRTUALIZED"
+  }
+  metadata = {
+    "ssh_authorized_keys" = "${var.custom_ssh_key}\n${tls_private_key.public_private_key_pair.public_key_openssh}"
+  }
+  #preserve_boot_volume = <<Optional value not found in discovery>>
+  shape = var.compute_shape
+  source_details {
+    #boot_volume_size_in_gbs = <<Optional value not found in discovery>>
+    #kms_key_id = <<Optional value not found in discovery>>
+    source_id   = var.arcade-web_source_image_id
+    source_type = "image"
+  }
+  state = "RUNNING"
+}
+resource oci_core_instance export_arcade-kafka {
+  agent_config {
+    is_management_disabled = "false"
+    is_monitoring_disabled = "false"
+  }
+  availability_config {
+    recovery_action = "RESTORE_INSTANCE"
+  }
+  availability_domain = data.oci_identity_availability_domain.export_GrMp-AP-SYDNEY-1-AD-1.name
+  compartment_id      = var.compartment_ocid
+  create_vnic_details {
+    assign_public_ip = "true"
+    display_name = "arcade-kafka"
+    freeform_tags = {
+    }
+    hostname_label = "arcade-kafka"
+    nsg_ids = [
+    ]
+    private_ip             = "10.0.0.4"
+    skip_source_dest_check = "false"
+    subnet_id              = oci_core_subnet.export_Public-Subnet.id
+    #vlan_id = <<Optional value not found in discovery>>
+  }
+  #dedicated_vm_host_id = <<Optional value not found in discovery>>
+  display_name = "arcade-kafka"
   extended_metadata = {
   }
   fault_domain = "FAULT-DOMAIN-1"
@@ -105,6 +165,22 @@ resource null_resource export_arcade-web_file_publickey {
     destination = "/tmp/terraform_api_public_key.pem"
   }
 }
+resource null_resource export_arcade-kafka_file {
+  depends_on = [oci_core_instance.export_arcade-kafka]
+  
+  connection {
+    agent       = false
+    timeout     = "30m"
+    host        = oci_core_instance.export_arcade-kafka.public_ip
+    user        = "opc"
+    private_key = tls_private_key.public_private_key_pair.private_key_pem
+  }
+
+  provisioner file {
+    source      = "scripts"
+    destination = "/tmp"
+  }
+}
 resource null_resource export_arcade-web_file_ociconfig {
   depends_on = [oci_core_instance.export_arcade-web]
   count = var.enable_api_key ? 1 : 0
@@ -151,14 +227,60 @@ resource null_resource export_arcade-web_remote-exec {
 
   provisioner remote-exec {
     inline = [
-      "chmod +x /tmp/scripts/bootstrap-server.sh",
-      "sudo /tmp/scripts/bootstrap-server.sh",
+      "chmod +x /tmp/scripts/bootstrap-server-web.sh",
+      "sudo /tmp/scripts/bootstrap-server-web.sh",
 	  "curl -LSs https://raw.githubusercontent.com/fnproject/cli/master/install | sh"
     ]
   }
 }
+resource null_resource export_swarm_file {
+  depends_on = [null_resource.export_arcade-web_remote-exec]
+  
+  provisioner local-exec {
+    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null opc@${oci_core_instance.export_arcade-web.public_ip}:/tmp/swarm_token.txt ${path.module}/swarm_token.txt"
+  }
+  provisioner local-exec {
+    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${path.module}/swarm_token.txt opc@${oci_core_instance.export_arcade-kafka.public_ip}:/tmp/swarm_token.txt"
+  }
+}
+resource null_resource export_arcade-kafka_remote-exec {
+  depends_on = [null_resource.export_swarm_file]
+  
+  connection {
+    agent       = false
+    timeout     = "30m"
+    host        = oci_core_instance.export_arcade-kafka.public_ip
+    user        = "opc"
+    private_key = tls_private_key.public_private_key_pair.private_key_pem
+  }
+
+  provisioner remote-exec {
+    inline = [
+      "chmod +x /tmp/scripts/bootstrap-server-kafka.sh",
+      "sudo /tmp/scripts/bootstrap-server-kafka.sh"
+    ]
+  }
+}
+resource null_resource export_arcade-kafka_remote-exec_oracle {
+  depends_on = [null_resource.export_arcade-kafka_remote-exec]
+  
+  connection {
+    agent       = false
+    timeout     = "30m"
+    host        = oci_core_instance.export_arcade-kafka.public_ip
+    user        = "opc"
+    private_key = tls_private_key.public_private_key_pair.private_key_pem
+  }
+
+  provisioner remote-exec {
+    inline = [
+      "chmod +x /tmp/scripts/bootstrap-user-kafka.sh",
+      "sudo /tmp/scripts/bootstrap-user-kafka.sh \"${var.git_repo}\""
+    ]
+  }
+}
 resource null_resource export_arcade-web_remote-exec_oracle {
-  depends_on = [null_resource.export_arcade-web_remote-exec,oci_database_autonomous_database.export_arcade]
+  depends_on = [null_resource.export_arcade-web_remote-exec,null_resource.export_arcade-kafka_remote-exec_oracle,oci_database_autonomous_database.export_arcade]
   
   connection {
     agent       = false
@@ -170,8 +292,8 @@ resource null_resource export_arcade-web_remote-exec_oracle {
 
   provisioner remote-exec {
     inline = [
-      "chmod +x /tmp/scripts/bootstrap-user.sh",
-      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} ${oci_core_instance.export_arcade-web.public_ip} ${var.enable_api_key} ${var.bucket_ns} ${var.git_repo}'"
+      "chmod +x /tmp/scripts/bootstrap-user-web.sh",
+      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-web.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} ${oci_core_instance.export_arcade-web.public_ip} ${var.enable_api_key} ${var.bucket_ns} \"${var.git_repo}\"'"
     ]
   }
 }
@@ -347,6 +469,61 @@ resource oci_core_default_security_list export_Default-Security-List-for-vcn-202
       #source_port_range = <<Optional value not found in discovery>>
     }
     #udp_options = <<Optional value not found in discovery>>
+  }
+  ingress_security_rules {
+    #description = <<Optional value not found in discovery>>
+    #icmp_options = <<Optional value not found in discovery>>
+    protocol    = "6"
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    stateless   = "false"
+    tcp_options {
+      max = "2377"
+      min = "2377"
+      #source_port_range = <<Optional value not found in discovery>>
+    }
+    #udp_options = <<Optional value not found in discovery>>
+  }
+  ingress_security_rules {
+    #description = <<Optional value not found in discovery>>
+    #icmp_options = <<Optional value not found in discovery>>
+    protocol    = "6"
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    stateless   = "false"
+    tcp_options {
+      max = "7946"
+      min = "7946"
+      #source_port_range = <<Optional value not found in discovery>>
+    }
+  }
+  ingress_security_rules {
+    #description = <<Optional value not found in discovery>>
+    #icmp_options = <<Optional value not found in discovery>>
+    protocol    = "17"
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    stateless   = "false"
+    #tcp_options = <<Optional value not found in discovery>>
+    udp_options {
+      max = "7946"
+      min = "7946"
+      #source_port_range = <<Optional value not found in discovery>>
+    }
+  }
+  ingress_security_rules {
+    #description = <<Optional value not found in discovery>>
+    #icmp_options = <<Optional value not found in discovery>>
+    protocol    = "17"
+    source      = "10.0.0.0/24"
+    source_type = "CIDR_BLOCK"
+    stateless   = "false"
+    #tcp_options = <<Optional value not found in discovery>>
+    udp_options {
+      max = "4789"
+      min = "4789"
+      #source_port_range = <<Optional value not found in discovery>>
+    }
   }
   manage_default_resource_id = oci_core_vcn.export_vcn-20200918-0835.default_security_list_id
 }
