@@ -30,12 +30,17 @@ chmod 755 bin/*.sh
 bin/oci-fn-run.sh
 bin/oci-fn-build.sh
 bin/api-events-serverless-deploy.sh ${ORDS_HOSTNAME}
-cp apis/events/kafka/event-producer/python/func.yaml.template apis/events/kafka/event-producer/python/func.yaml
-bin/api-events-kafka-deploy.sh
-# I don't know why but the bootstrap servers are not found unless deploying this twice.
+export BOOTSTRAP_SERVER=kafka_kafka_1:9092
+export TOPIC=oci-arcade-events
+export API_USER=""
+export API_PASSWORD=""
+cat apis/events/kafka/event-producer/python/func.yaml.template | envsubst > apis/events/kafka/event-producer/python/func.yaml
 bin/api-events-kafka-deploy.sh
 bin/api-score-docker-build.sh ${ORDS_HOSTNAME} ${USER_PWD}
 bin/api-score-docker-run.sh
+cp containers/kafka/oci-kafka-events.Dockerfile.template containers/kafka/oci-kafka-events.Dockerfile
+bin/oci-kafka-event-build.sh ${ORDS_HOSTNAME} ${BOOTSTRAP_SERVER} ${TOPIC}
+bin/oci-kafka-event-run.sh
 docker network inspect arcade_network
 if [ "${API_KEY_ENABLED}" == "true" ]; then
   bin/oci-arcade-storage-build.sh ${API_HOSTNAME} ${BUCKET_NS}
