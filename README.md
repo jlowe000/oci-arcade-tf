@@ -30,6 +30,7 @@ This borrows a couple of open-source javascript games to extends and play with.
 - Know whether you want to run a free-tier instance of the database
 - Create a SSH Key (ie using puttygen or ssh-keygen)
 - Define an admin password for ADW
+- Know your Kafka configuration (if you want to point this to a third-party cluster environment)
 
 ### Here are some references to help with filling in this information from your tenancy
 
@@ -61,6 +62,7 @@ This borrows a couple of open-source javascript games to extends and play with.
     - There can only be 2 x VM instances and 2 x Autonomous Database instances.
   - Need to "accept" exception in browser for the API calls (https://<compute-public-ip>:8081/event) - Without this step, API calls from game will fail with CERT exception
   - If you are wanting to "Destroy" the stack, you need to delete the folders in the oci-arcade bucket before running the Terraform destroy activity. Otherwise, the bucket will fail to be destroyed. You can delete the folders which will delete the underlying objects.
+    - If you have the oci CLI configured you can do a bulk-delete with a single line. `oci os object bulk-delete -bn <bucket-name> -ns <namespace>`
   - If you uncheck the API Key Enabled variable and sets to "false", then you need to run the following steps manually.
     - Create a set of ssl key and cert using ssl-keygen or puttygen.
     - Create an API key for your user but uploading the public key generated. "Copy and Paste" the OCI SDK config
@@ -69,4 +71,4 @@ This borrows a couple of open-source javascript games to extends and play with.
     - Run the following command - bin/oci-arcade-storage-deploy.sh <compute.ip>
       - where the <compute.ip> is the created compute's public IP address.
     - The result will be that the static content will be uploaded to the objectstorage. You can attempt to access the games.
-
+  - If you provide a Kafka username, the connection will use the following protocol = 'SASL_SSL' and sasl_mechanism = 'PLAIN'. Otherwise it will be 'PLAINTEXT'.
