@@ -25,6 +25,14 @@ variableGroups:
     - is_free_tier
     - custom_adb_admin_password
 
+  - title: "Kafka Configuration"
+    visible: true  
+    variables:
+    - bootstrap_server
+    - topic
+    - kafka_user
+    - kafka_password
+
   - title: "User Configuration"
     visible: true  
     variables:
@@ -111,3 +119,27 @@ variables:
     type: password
     required: true
     title: "ADW Password"
+
+  bootstrap_server:
+    type: string
+    required: true
+    title: "Bootstrap Server"
+    visible: true
+
+  kafka_user:
+    type: string
+    required: false
+    title: "Kafka User"
+    visible: true
+    
+  kafka_password:
+    type: string
+    required: false
+    title: "Kafka Password"
+    visible: true
+    
+  topic:
+    type: string
+    required: true
+    title: "Topic"
+    visible: true

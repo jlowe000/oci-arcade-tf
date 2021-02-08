@@ -1,9 +1,22 @@
-USER_PWD=$1
-ORDS_HOSTNAME=`echo $2 | cut -d "/" -f 3`
-API_HOSTNAME=$3
-API_KEY_ENABLED=$4
-BUCKET_NS=$5
-GIT_REPO=$6
+export USER_PWD=$1
+shift
+export ORDS_HOSTNAME=`echo $1 | cut -d "/" -f 3`
+shift
+export API_HOSTNAME=$1
+shift
+export BOOTSTRAP_SERVER=$1
+shift
+export API_USER=$1
+shift
+export API_PASSWORD=$1
+shift
+export TOPIC=$1
+shift
+export API_KEY_ENABLED=$1
+shift
+export BUCKET_NS=$1
+shift
+export GIT_REPO=$1
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
 git clone ${GIT_REPO}
@@ -30,10 +43,6 @@ chmod 755 bin/*.sh
 bin/oci-fn-run.sh
 bin/oci-fn-build.sh
 bin/api-events-serverless-deploy.sh ${ORDS_HOSTNAME}
-export BOOTSTRAP_SERVER=kafka_kafka_1:9092
-export TOPIC=oci-arcade-events
-export API_USER=""
-export API_PASSWORD=""
 cat apis/events/kafka/event-producer/python/func.yaml.template | envsubst > apis/events/kafka/event-producer/python/func.yaml
 bin/api-events-kafka-deploy.sh
 bin/api-score-docker-build.sh ${ORDS_HOSTNAME} ${USER_PWD}

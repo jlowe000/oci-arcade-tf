@@ -10,3 +10,7 @@ variable custom_ssh_key { default = "ssh-rsa XXXX" }
 variable is_free_tier { default = "true" }
 variable custom_adb_admin_password { default = "WelcomeTiger123" }
 variable git_repo { default = "https://github.com/jlowe000/oci-arcade.git --branch free-tier" }
+variable bootstrap_server { default = "kafka_kafka_1:9092" }
+variable kafka_user { default = "" }
+variable kafka_password { default = "" }
+variable topic { default = "oci-arcade-events" }

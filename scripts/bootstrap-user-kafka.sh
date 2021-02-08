@@ -1,4 +1,5 @@
-GIT_REPO=$1
+export GIT_REPO=$1
+shift
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
 git clone ${GIT_REPO}
