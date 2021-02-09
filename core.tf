@@ -275,7 +275,7 @@ resource null_resource export_arcade-kafka_remote-exec_oracle {
   provisioner remote-exec {
     inline = [
       "chmod +x /tmp/scripts/bootstrap-user-kafka.sh",
-      "sudo /tmp/scripts/bootstrap-user-kafka.sh \"${var.git_repo}\""
+      "sudo /tmp/scripts/bootstrap-user-kafka.sh \"${var.git_repo}\" \"${var.topic}\""
     ]
   }
 }
