@@ -9,6 +9,7 @@ variable arcade-web_source_image_id { default = "ocid1.image.oc1.ap-sydney-1.aaa
 variable custom_ssh_key { default = "ssh-rsa XXXX" }
 variable is_free_tier { default = "true" }
 variable custom_adb_admin_password { default = "WelcomeTiger123" }
+variable apigw-dn { default = "" }
 variable git_repo { default = "https://github.com/jlowe000/oci-arcade.git --branch free-tier" }
 variable bootstrap_server { default = "kafka_kafka_1:9092" }
 variable kafka_user { default = "" }

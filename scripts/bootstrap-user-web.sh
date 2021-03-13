@@ -2,7 +2,13 @@ export USER_PWD=$1
 shift
 export ORDS_HOSTNAME=`echo $1 | cut -d "/" -f 3`
 shift
-export API_HOSTNAME=$1
+export APIGW_NAME=$1
+shift
+if [ "${APIGW_NAME}" != "" ]; then
+  export API_HOSTNAME=$APIGW_NAME
+else
+  export API_HOSTNAME=$1:8081
+fi
 shift
 export BOOTSTRAP_SERVER=$1
 shift

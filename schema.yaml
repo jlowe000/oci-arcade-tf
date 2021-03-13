@@ -14,6 +14,7 @@ variableGroups:
     - region
     - compartment_ocid
     - bucket_ns
+    - apigw-dn
     - git_repo
     
   - title: "Compute Configuration"
@@ -88,6 +89,12 @@ variables:
     type: string
     required: true
     title: "Tenancy"
+    visible: true
+
+  apigw-dn:
+    type: string
+    required: false
+    title: "APIGW Domain Name"
     visible: true
 
   user_id:
