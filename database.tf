@@ -26,11 +26,14 @@ resource oci_database_autonomous_database export_arcade {
   nsg_ids = [
   ]
   open_mode        = "READ_WRITE"
+  operations_insights_status = "NOT_ENABLED"
   permission_level = "UNRESTRICTED"
   #private_endpoint_label = <<Optional value not found in discovery>>
   #refreshable_mode = <<Optional value not found in discovery>>
   #source = <<Optional value not found in discovery>>
   #source_id = <<Optional value not found in discovery>>
+  standby_whitelisted_ips = [
+  ]
   state = "AVAILABLE"
   #subnet_id = <<Optional value not found in discovery>>
   #switchover_to = <<Optional value not found in discovery>>
