@@ -36,9 +36,9 @@ echo "grant resource, connect, unlimited tablespace to ociarcade;" >> /home/orac
 cd /home/oracle/repos/oci-arcade
 echo 'export BUCKET_NS=${BUCKET_NS}' >> ~/.bash_profile
 echo 'export TNS_ADMIN=/home/oracle/wallet' >> ~/.bash_profile
-echo 'export ORACLE_HOME=/usr/lib/oracle/18.3/client64' >> ~/.bash_profile
-echo 'export LD_LIBRARY_PATH=${ORACLE_HOME}/lib' >> ~/.bash_profile
-echo 'export PATH=${PATH}:${ORACLE_HOME}/bin' >> ~/.bash_profile
+echo 'export ORACLE_HOME=/opt/oracle/instantclient_21_1' >> ~/.bash_profile
+echo 'export PATH=${PATH}:${ORACLE_HOME}' >> ~/.bash_profile
+echo 'export LD_LIBRARY_PATH=${ORACLE_HOME}' >> ~/.bash_profile
 . ~/.bash_profile
 exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql
 exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql

@@ -124,7 +124,7 @@ resource null_resource export_arcade-web_file {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -140,7 +140,7 @@ resource null_resource export_arcade-web_file_privatekey {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -156,7 +156,7 @@ resource null_resource export_arcade-web_file_publickey {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -172,7 +172,7 @@ resource null_resource export_arcade-kafka_file {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-kafka.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -189,7 +189,7 @@ resource null_resource export_arcade-web_file_ociconfig {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -205,7 +205,7 @@ resource null_resource export_arcade-web_file_wallet {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -221,7 +221,7 @@ resource null_resource export_arcade-web_remote-exec {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -237,10 +237,10 @@ resource null_resource export_swarm_file {
   depends_on = [null_resource.export_arcade-web_remote-exec]
   
   provisioner local-exec {
-    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null opc@${oci_core_instance.export_arcade-web.public_ip}:/tmp/swarm_token.txt ${path.module}/swarm_token.txt"
+    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${oci_core_instance.export_arcade-web.public_ip}:/tmp/swarm_token.txt ${path.module}/swarm_token.txt"
   }
   provisioner local-exec {
-    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${path.module}/swarm_token.txt opc@${oci_core_instance.export_arcade-kafka.public_ip}:/tmp/swarm_token.txt"
+    command = "scp -i ${path.module}/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${path.module}/swarm_token.txt ubuntu@${oci_core_instance.export_arcade-kafka.public_ip}:/tmp/swarm_token.txt"
   }
 }
 resource null_resource export_arcade-kafka_remote-exec {
@@ -250,7 +250,7 @@ resource null_resource export_arcade-kafka_remote-exec {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-kafka.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -268,14 +268,14 @@ resource null_resource export_arcade-kafka_remote-exec_oracle {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-kafka.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
   provisioner remote-exec {
     inline = [
       "chmod +x /tmp/scripts/bootstrap-user-kafka.sh",
-      "sudo /tmp/scripts/bootstrap-user-kafka.sh \"${var.git_repo}\" \"${var.topic}\""
+      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-kafka.sh \"${var.git_repo}\" \"${var.topic}\"'"
     ]
   }
 }
@@ -286,7 +286,7 @@ resource null_resource export_arcade-web_remote-exec_oracle {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "opc"
+    user        = "ubuntu"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
