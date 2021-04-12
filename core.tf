@@ -19,7 +19,7 @@ resource oci_core_instance export_arcade-web {
   availability_config {
     recovery_action = "RESTORE_INSTANCE"
   }
-  availability_domain = data.oci_identity_availability_domain.export_GrMp-AP-SYDNEY-1-AD-1.name
+  availability_domain = data.oci_identity_availability_domain.export_availability_domain.name
   compartment_id      = var.compartment_ocid
   create_vnic_details {
     assign_public_ip = "true"
@@ -72,7 +72,7 @@ resource oci_core_instance export_arcade-kafka {
   availability_config {
     recovery_action = "RESTORE_INSTANCE"
   }
-  availability_domain = data.oci_identity_availability_domain.export_GrMp-AP-SYDNEY-1-AD-1.name
+  availability_domain = data.oci_identity_availability_domain.export_availability_domain.name
   compartment_id      = var.compartment_ocid
   create_vnic_details {
     assign_public_ip = "true"
