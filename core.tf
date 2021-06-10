@@ -56,6 +56,10 @@ resource oci_core_instance export_arcade-web {
   }
   #preserve_boot_volume = <<Optional value not found in discovery>>
   shape = var.compute_shape
+  shape_config {
+    memory_in_gbs = 24
+    ocpus = 4
+  }
   source_details {
     #boot_volume_size_in_gbs = <<Optional value not found in discovery>>
     #kms_key_id = <<Optional value not found in discovery>>

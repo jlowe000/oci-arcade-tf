@@ -59,7 +59,6 @@ variables:
     type: oci:core:image:id
     dependsOn:
       compartmentId: ${compartment_ocid}
-      operatingSystem: "Canonical Ubuntu"      
     required: true
     visible: true
     title: "Arcade Web Compute Image"
