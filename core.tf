@@ -38,7 +38,6 @@ resource oci_core_instance export_arcade-web {
   display_name = "arcade-web"
   extended_metadata = {
   }
-  fault_domain = "FAULT-DOMAIN-1"
   freeform_tags = {
   }
   #ipxe_script = <<Optional value not found in discovery>>
@@ -57,8 +56,8 @@ resource oci_core_instance export_arcade-web {
   #preserve_boot_volume = <<Optional value not found in discovery>>
   shape = var.compute_shape
   shape_config {
-    memory_in_gbs = 24
-    ocpus = 4
+    memory_in_gbs = 6
+    ocpus = 1
   }
   source_details {
     #boot_volume_size_in_gbs = <<Optional value not found in discovery>>
