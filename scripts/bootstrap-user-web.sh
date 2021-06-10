@@ -31,7 +31,6 @@ git clone https://github.com/jlowe000/fdk-go --branch arm64-oci-build
 git clone https://github.com/jlowe000/fdk-python --branch arm64-oci-build
 git clone https://github.com/jlowe000/fdk-java --branch arm64-oci-build
 git clone https://github.com/jlowe000/fdk-node --branch arm64-oci-build
-git clone https://github.com/jlowe000/fdk-dockers --branch arm64-oci-build
 git clone https://github.com/jlowe000/dockers --branch arm64-oci-build
 cd cli/
 export GOARCH=arm64
