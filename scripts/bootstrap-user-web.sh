@@ -34,7 +34,6 @@ git clone https://github.com/jlowe000/fdk-python --branch arm64-oci-build
 git clone https://github.com/jlowe000/fdk-java --branch arm64-oci-build
 git clone https://github.com/jlowe000/fdk-node --branch arm64-oci-build
 git clone https://github.com/jlowe000/dockers --branch arm64-oci-build
-git clone https://github.com/jlowe000/docker-base --branch arm64-oci-build
 git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
 git clone ${GIT_REPO}
 cd /home/oracle/repos/cli/
@@ -62,8 +61,6 @@ cd /home/oracle/repos/fdk-node/
 ./build-images.sh 14
 docker tag fnproject/node:11 fnproject/node:latest
 docker tag fnproject/node:11-dev fnproject/node:dev
-cd /home/oracle/repos/docker-base/
-docker build -t wurstmeister/base .
 cd /home/oracle/repos/zookeeper-docker/
 docker build -t wurstmeister/zookeeper .
 cd /home/oracle/wallet/
