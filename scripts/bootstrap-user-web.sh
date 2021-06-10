@@ -25,6 +25,41 @@ shift
 export GIT_REPO=$1
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
+git clone https://github.com/jlowe000/fn --branch arm64-oci-build
+git clone https://github.com/jlowe000/cli --branch arm64-oci-build
+git clone https://github.com/jlowe000/fdk-go --branch arm64-oci-build
+git clone https://github.com/jlowe000/fdk-python --branch arm64-oci-build
+git clone https://github.com/jlowe000/fdk-java --branch arm64-oci-build
+git clone https://github.com/jlowe000/fdk-node --branch arm64-oci-build
+git clone https://github.com/jlowe000/fdk-dockers --branch arm64-oci-build
+git clone https://github.com/jlowe000/dockers --branch arm64-oci-build
+cd cli/
+export GOARCH=arm64
+make build
+cd ..
+cd fn
+export GOARCH=arm64
+make build
+make build-dind
+make docker-build
+cd ..
+cd fdk-go/
+./build-images.sh 1.15
+docker tag fnproject/go:1.15 fnproject/go:latest
+docker tag fnproject/go:1.15-dev fnproject/go:dev
+cd ..
+cd fdk-python/
+./build-images.sh 3.6
+./build-images.sh 3.7
+./build-images.sh 3.7.1
+./build-images.sh 3.8
+./build-images.sh 3.8.5
+cd ..
+cd fdk-node/
+./build-images.sh 11
+./build-images.sh 14
+docker tag fnproject/node:11 fnproject/node:latest
+docker tag fnproject/node:11-dev fnproject/node:dev
 git clone ${GIT_REPO}
 pip3 install oci --user
 cd /home/oracle/wallet/
@@ -36,14 +71,14 @@ echo "grant resource, connect, unlimited tablespace to ociarcade;" >> /home/orac
 cd /home/oracle/repos/oci-arcade
 echo 'export BUCKET_NS=${BUCKET_NS}' >> ~/.bash_profile
 echo 'export TNS_ADMIN=/home/oracle/wallet' >> ~/.bash_profile
-echo 'export ORACLE_HOME=/opt/oracle/instantclient_21_1' >> ~/.bash_profile
+echo 'export ORACLE_HOME=/opt/oracle/instantclient_19_10' >> ~/.bash_profile
 echo 'export PATH=${PATH}:${ORACLE_HOME}' >> ~/.bash_profile
 echo 'export LD_LIBRARY_PATH=${ORACLE_HOME}' >> ~/.bash_profile
 . ~/.bash_profile
-exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql
-exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql
-exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql
-exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql
+# exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql
+# exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql
+# exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql
+# exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql
 cp containers/web/api-score.Dockerfile.template containers/web/api-score.Dockerfile
 chmod 755 bin/*.sh
 bin/oci-fn-run.sh
@@ -59,4 +94,15 @@ bin/oci-kafka-event-run.sh
 docker network inspect arcade_network
 if [ "${API_KEY_ENABLED}" == "true" ]; then
   bin/oci-arcade-storage-build.sh ${API_HOSTNAME} ${BUCKET_NS}
-fi
+fiexport GIT_REPO=$1
+export TOPIC=$2
+shift
+mkdir /home/oracle/repos
+cd /home/oracle/repos/
+git clone ${GIT_REPO}
+cd /home/oracle/repos/oci-arcade
+chmod 755 bin/*.sh
+cat containers/kafka/oci-kafka-compose.yml.template | envsubst > containers/kafka/oci-kafka-compose.yml
+bin/oci-kafka-cluster-build.sh
+bin/oci-kafka-cluster-run.sh
+docker network inspect arcade_network
