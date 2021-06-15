@@ -27,13 +27,13 @@ mkdir /home/oracle/bin
 echo 'export PATH=${PATH}:/home/oracle/bin' >> ~/.profile
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
-git clone https://github.com/jlowe000/fn --branch arm64-oci-build
-git clone https://github.com/jlowe000/cli --branch arm64-oci-build
-git clone https://github.com/jlowe000/fdk-go --branch arm64-oci-build
-git clone https://github.com/jlowe000/fdk-python --branch arm64-oci-build
-git clone https://github.com/jlowe000/fdk-java --branch arm64-oci-build
-git clone https://github.com/jlowe000/fdk-node --branch arm64-oci-build
-git clone https://github.com/jlowe000/dockers --branch arm64-oci-build
+git clone https://github.com/fnproject/fn --branch master
+git clone https://github.com/fnproject/cli --branch master
+git clone https://github.com/fnproject/fdk-go --branch master
+git clone https://github.com/fnproject/fdk-python --branch master
+git clone https://github.com/fnproject/fdk-java --branch master
+git clone https://github.com/fnproject/fdk-node --branch master
+git clone https://github.com/fnproject/dockers --branch master
 git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
 git clone ${GIT_REPO}
 cd /home/oracle/repos/cli/
