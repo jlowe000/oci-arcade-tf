@@ -86,6 +86,7 @@ echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql" 
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 chmod 755 /home/oracle/repos/oci-arcade/infra/db/run.sh
 docker run --rm -it -v /opt/oracle:/opt/oracle -v /home/oracle:/home/oracle oraclelinux:7 /home/oracle/repos/oci-arcade/infra/db/run.sh
+bin/oci-cache-docker-run.sh
 cat containers/kafka/oci-kafka-compose.yml.template | envsubst > containers/kafka/oci-kafka-compose.yml
 bin/oci-kafka-cluster-build.sh
 cp containers/kafka/oci-kafka-events.Dockerfile.template containers/kafka/oci-kafka-events.Dockerfile
