@@ -1,22 +1,20 @@
 # this is a placeholder to put the scripts required to bootstrap the compute
 
-useradd -m -s /bin/bash oracle
-apt-get update
-apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release zip
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo   "deb [arch=arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt-get update
-apt-get -y install docker-ce docker-ce-cli containerd.io
-apt-get -y install git
-apt-get -y install python3-pip
-apt-get -y install zip
+useradd oracle
+yum update -y
+yum install -y yum-utils
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+python3 -m pip install --upgrade pip
+yum install -y docker-ce python3-devel
+yum install -y git
+yum install -y zip
 python3 -m pip install -IU docker-compose
 pip3 install oci-cli
 service docker start
 docker network create arcade_network
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8080 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8081 -j ACCEPT
-netfilter-persistent save
+firewall-cmd --add-port 8080/tcp --permanent --zone=public
+firewall-cmd --add-port 8081/tcp --permanent --zone=public
+firewall-cmd --reload
 usermod -a -G docker oracle
 mkdir /home/oracle/.oci
 mv /tmp/terraform_api_public_key.pem /home/oracle/.oci
@@ -33,7 +31,7 @@ unzip instantclient-sqlplus-linux.arm64-19.10.0.0.0dbru.zip
 mkdir /home/oracle/wallet
 mv /tmp/arcade-wallet.zip /home/oracle/wallet
 chown -R oracle:oracle /home/oracle/wallet
-apt-get -y install go
-apt-get -y install golang
-apt-get -y install net-tools
-apt-get -y install openjdk-8-jdk
+yum install -y go
+yum install -y golang
+yum install -y net-tools
+yum install -y java-1.8.0-openjdk-devel
