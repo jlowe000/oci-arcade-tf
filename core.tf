@@ -74,7 +74,7 @@ resource null_resource export_arcade-web_file {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -90,7 +90,7 @@ resource null_resource export_arcade-web_file_privatekey {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -106,7 +106,7 @@ resource null_resource export_arcade-web_file_publickey {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -123,7 +123,7 @@ resource null_resource export_arcade-web_file_ociconfig {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -139,7 +139,7 @@ resource null_resource export_arcade-web_file_wallet {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -155,7 +155,7 @@ resource null_resource export_arcade-web_remote-exec {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
@@ -173,7 +173,7 @@ resource null_resource export_arcade-web_remote-exec_oracle {
     agent       = false
     timeout     = "30m"
     host        = oci_core_instance.export_arcade-web.public_ip
-    user        = "ubuntu"
+    user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
 
