@@ -68,7 +68,7 @@ unzip /home/oracle/wallet/arcade-wallet.zip
 echo "WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=\"/home/oracle/wallet\")))" > /home/oracle/wallet/sqlnet.ora
 echo "SSL_SERVER_DN_MATCH=yes" >> /home/oracle/wallet/sqlnet.ora
 echo "create user ociarcade identified by ${USER_PWD};" > /home/oracle/repos/oci-arcade/infra/db/schema.sql
-echo "grant resource, connect, unlimited tablespace to ociarcade;" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
+echo "grant DWROLE, unlimited tablespace to ociarcade;" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
 echo "export BUCKET_NS=${BUCKET_NS}" >> ~/.profile
 echo 'export TNS_ADMIN=/home/oracle/wallet' >> ~/.profile
 echo 'export ORACLE_HOME=/opt/oracle/instantclient_19_10' >> ~/.profile
