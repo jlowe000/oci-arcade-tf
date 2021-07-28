@@ -82,6 +82,7 @@ echo "yum install -y libaio" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "cd /home/oracle/repos/oci-arcade" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
+echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/OCIARCADE.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-app.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
