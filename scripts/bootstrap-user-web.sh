@@ -73,7 +73,7 @@ echo "exec apex_instance_admin.add_workspace(p_workspace => 'OCIARCADE', p_prima
 echo "begin" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "apex_util.set_workspace(p_workspace => 'OCIARCADE');" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "apex_util.create_user(" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
-echo "  p_username => 'ociarcade'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
+echo "  p_user_name => 'ociarcade'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "  p_web_password => '${USER_PWD}'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "  p_developer_privs => 'ADMIN:CREATE:DATA_LOADER:EDIT:HELP:MONITOR:SQL'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "  p_email_address => 'ociarcade@withoracle.com'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
@@ -96,7 +96,6 @@ echo "cd /home/oracle/repos/oci-arcade" >> /home/oracle/repos/oci-arcade/infra/d
 echo "exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/apex.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
-echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/OCIARCADE.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-app.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
