@@ -69,9 +69,9 @@ echo "WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY=\"/h
 echo "SSL_SERVER_DN_MATCH=yes" >> /home/oracle/wallet/sqlnet.ora
 echo "create user ociarcade identified by ${USER_PWD};" > /home/oracle/repos/oci-arcade/infra/db/schema.sql
 echo "grant DWROLE, unlimited tablespace to ociarcade;" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
-echo "exec apex_instance_admin.add_workspace(p_workspace => 'COSTGOV', p_primary_schema => 'COSTGOV');" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
+echo "exec apex_instance_admin.add_workspace(p_workspace => 'OCIARCADE', p_primary_schema => 'OCIARCADE');" >> /home/oracle/repos/oci-arcade/infra/db/schema.sql
 echo "begin" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
-echo "apex_util.set_workspace('p_workspace => 'OCIARCADE');" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
+echo "apex_util.set_workspace(p_workspace => 'OCIARCADE');" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "apex_util.create_user(" >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "  p_username => 'ociarcade'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
 echo "  p_web_password => '${USER_PWD}'," >> /home/oracle/repos/oci-arcade/infra/db/apex.sql
