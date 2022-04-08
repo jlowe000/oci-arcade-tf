@@ -3,19 +3,21 @@
 useradd oracle
 yum update -y
 yum install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 python3 -m pip install --upgrade pip
-yum install -y docker-ce python3-devel
+# yum install -y docker-ce python3-devel
+yum install -y podman podman-docker
+yum install -y python3-devel
 yum install -y git
 yum install -y zip
 python3 -m pip install -IU docker-compose
 pip3 install oci-cli
-service docker start
+# service docker start
 docker network create arcade_network
 firewall-cmd --add-port 8080/tcp --permanent --zone=public
 firewall-cmd --add-port 8081/tcp --permanent --zone=public
 firewall-cmd --reload
-usermod -a -G docker oracle
+# usermod -a -G docker oracle
 mkdir /home/oracle/.oci
 mv /tmp/terraform_api_public_key.pem /home/oracle/.oci
 mv /tmp/terraform_api_key.pem /home/oracle/.oci
@@ -35,3 +37,4 @@ yum install -y go
 yum install -y golang
 yum install -y net-tools
 yum install -y java-1.8.0-openjdk-devel
+echo "  \"golang\" = \"docker.io/library/golang\"" >> /etc/containers/registries.conf.d/000-shortnames.conf

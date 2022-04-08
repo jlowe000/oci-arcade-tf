@@ -108,16 +108,16 @@ cat containers/kafka/oci-kafka-compose.yml.template | envsubst > containers/kafk
 bin/oci-kafka-cluster-build.sh
 cp containers/kafka/oci-kafka-events.Dockerfile.template containers/kafka/oci-kafka-events.Dockerfile
 bin/oci-kafka-cluster-run.sh
-bin/oci-kafka-event-build.sh ${ORDS_HOSTNAME} ${BOOTSTRAP_SERVER} ${TOPIC}
-bin/oci-kafka-event-run.sh
+# bin/oci-kafka-event-build.sh ${ORDS_HOSTNAME} ${BOOTSTRAP_SERVER} ${TOPIC}
+# bin/oci-kafka-event-run.sh
 cp containers/web/api-score.Dockerfile.template containers/web/api-score.Dockerfile
 chmod 755 bin/*.sh
-bin/oci-fn-run.sh
-bin/oci-fn-build.sh
-bin/api-events-serverless-deploy.sh ${ORDS_HOSTNAME}
-cat apis/events/kafka/event-producer/python/func.yaml.template | envsubst > apis/events/kafka/event-producer/python/func.yaml
-bin/api-events-kafka-deploy.sh
-bin/api-score-docker-build.sh ${ORDS_HOSTNAME} ${USER_PWD}
+# bin/oci-fn-run.sh
+# bin/oci-fn-build.sh
+# bin/api-events-serverless-deploy.sh ${ORDS_HOSTNAME}
+# cat apis/events/kafka/event-producer/python/func.yaml.template | envsubst > apis/events/kafka/event-producer/python/func.yaml
+# bin/api-events-kafka-deploy.sh
+bin/api-score-docker-build.sh ${ORDS_HOSTNAME} ${USER_PWD} ${BOOTSTRAP_SERVER} ${TOPIC}
 bin/api-score-docker-run.sh
 pip3 install oci --user
 if [ "${API_KEY_ENABLED}" == "true" ]; then
