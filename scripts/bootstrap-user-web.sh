@@ -27,40 +27,40 @@ mkdir /home/oracle/bin
 echo 'export PATH=${PATH}:/home/oracle/bin' >> ~/.profile
 mkdir /home/oracle/repos
 cd /home/oracle/repos/
-git clone https://github.com/fnproject/fn --branch master
-git clone https://github.com/fnproject/cli --branch master
-git clone https://github.com/fnproject/fdk-go --branch master
-git clone https://github.com/fnproject/fdk-python --branch master
-git clone https://github.com/fnproject/fdk-java --branch master
-git clone https://github.com/fnproject/fdk-node --branch master
-git clone https://github.com/fnproject/dockers --branch master
-git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
-git clone ${GIT_REPO}
-cd /home/oracle/repos/cli/
-export GOARCH=arm64
-make build
-cp fn /home/oracle/bin
-cd /home/oracle/repos/fn
-export GOARCH=arm64
-make build
-make build-dind
-make docker-build
-cp fnserver /home/oracle/bin
-cd /home/oracle/repos/fdk-go/
-./build-images.sh 1.15
-docker tag fnproject/go:1.15 fnproject/go:latest
-docker tag fnproject/go:1.15-dev fnproject/go:dev
-cd /home/oracle/repos/fdk-python/
-./build-images.sh 3.6
-./build-images.sh 3.7
-./build-images.sh 3.7.1
-./build-images.sh 3.8
-./build-images.sh 3.8.5
-cd /home/oracle/repos/fdk-node/
-./build-images.sh 11
-./build-images.sh 14
-docker tag fnproject/node:11 fnproject/node:latest
-docker tag fnproject/node:11-dev fnproject/node:dev
+# git clone https://github.com/fnproject/fn --branch master
+# git clone https://github.com/fnproject/cli --branch master
+# git clone https://github.com/fnproject/fdk-go --branch master
+# git clone https://github.com/fnproject/fdk-python --branch master
+# git clone https://github.com/fnproject/fdk-java --branch master
+# git clone https://github.com/fnproject/fdk-node --branch master
+# git clone https://github.com/fnproject/dockers --branch master
+# git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
+# git clone ${GIT_REPO}
+# cd /home/oracle/repos/cli/
+# export GOARCH=arm64
+# make build
+# cp fn /home/oracle/bin
+# cd /home/oracle/repos/fn
+# export GOARCH=arm64
+# make build
+# make build-dind
+# make docker-build
+# cp fnserver /home/oracle/bin
+# cd /home/oracle/repos/fdk-go/
+# ./build-images.sh 1.15
+# docker tag fnproject/go:1.15 fnproject/go:latest
+# docker tag fnproject/go:1.15-dev fnproject/go:dev
+# cd /home/oracle/repos/fdk-python/
+# ./build-images.sh 3.6
+# ./build-images.sh 3.7
+# ./build-images.sh 3.7.1
+# ./build-images.sh 3.8
+# ./build-images.sh 3.8.5
+# cd /home/oracle/repos/fdk-node/
+# ./build-images.sh 11
+# ./build-images.sh 14
+# docker tag fnproject/node:11 fnproject/node:latest
+# docker tag fnproject/node:11-dev fnproject/node:dev
 cd /home/oracle/repos/zookeeper-docker/
 docker build -t wurstmeister/zookeeper .
 cd /home/oracle/wallet/

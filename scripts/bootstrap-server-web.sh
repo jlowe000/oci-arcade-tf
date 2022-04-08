@@ -38,3 +38,4 @@ yum install -y golang
 yum install -y net-tools
 yum install -y java-1.8.0-openjdk-devel
 echo "  \"golang\" = \"docker.io/library/golang\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+echo "  \"arm64v8/openjdk\" = \"docker.io/arm64v8/openjdk\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
