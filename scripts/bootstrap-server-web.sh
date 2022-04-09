@@ -13,7 +13,6 @@ yum install -y zip
 python3 -m pip install -IU docker-compose
 pip3 install oci-cli
 # service docker start
-docker network create arcade_network
 firewall-cmd --add-port 8080/tcp --permanent --zone=public
 firewall-cmd --add-port 8081/tcp --permanent --zone=public
 firewall-cmd --reload
@@ -33,9 +32,12 @@ unzip instantclient-sqlplus-linux.arm64-19.10.0.0.0dbru.zip
 mkdir /home/oracle/wallet
 mv /tmp/arcade-wallet.zip /home/oracle/wallet
 chown -R oracle:oracle /home/oracle/wallet
+yum install -y libaio
 yum install -y go
 yum install -y golang
 yum install -y net-tools
 yum install -y java-1.8.0-openjdk-devel
 echo "  \"golang\" = \"docker.io/library/golang\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+echo "  \"kafka_kafka\" = \"docker.io/library/kafka_kafka\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
 echo "  \"arm64v8/openjdk\" = \"docker.io/arm64v8/openjdk\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+echo "  \"oraclecoherence/coherence-ce\" = \"docker.io/oraclecoherence/coherence-ce\"" >> /etc/containers/registries.conf.d/000-shortnames.conf

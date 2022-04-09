@@ -34,8 +34,8 @@ cd /home/oracle/repos/
 # git clone https://github.com/fnproject/fdk-java --branch master
 # git clone https://github.com/fnproject/fdk-node --branch master
 # git clone https://github.com/fnproject/dockers --branch master
-# git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
-# git clone ${GIT_REPO}
+git clone https://github.com/jlowe000/zookeeper-docker --branch arm64-oci-build
+git clone ${GIT_REPO}
 # cd /home/oracle/repos/cli/
 # export GOARCH=arm64
 # make build
@@ -91,7 +91,7 @@ cd /home/oracle/repos/oci-arcade
 . ~/.profile
 echo "#!/bin/sh" > /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo ". /home/oracle/.profile" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
-echo "yum install -y libaio" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
+# echo "yum install -y libaio" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "cd /home/oracle/repos/oci-arcade" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus admin/${USER_PWD}@arcade_low @ infra/db/schema.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
@@ -102,7 +102,9 @@ echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-ap
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-config.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 chmod 755 /home/oracle/repos/oci-arcade/infra/db/run.sh
-docker run --rm -it -v /opt/oracle:/opt/oracle -v /home/oracle:/home/oracle oraclelinux:7 /home/oracle/repos/oci-arcade/infra/db/run.sh
+# docker run --rm -it -v /opt/oracle:/opt/oracle -v /home/oracle:/home/oracle oraclelinux:7 /home/oracle/repos/oci-arcade/infra/db/run.sh
+/home/oracle/repos/oci-arcade/infra/db/run.sh
+docker network create arcade_network
 bin/oci-cache-docker-run.sh
 cat containers/kafka/oci-kafka-compose.yml.template | envsubst > containers/kafka/oci-kafka-compose.yml
 bin/oci-kafka-cluster-build.sh
