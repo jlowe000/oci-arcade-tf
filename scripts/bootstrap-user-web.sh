@@ -105,13 +105,14 @@ chmod 755 /home/oracle/repos/oci-arcade/infra/db/run.sh
 # docker run --rm -it -v /opt/oracle:/opt/oracle -v /home/oracle:/home/oracle oraclelinux:7 /home/oracle/repos/oci-arcade/infra/db/run.sh
 /home/oracle/repos/oci-arcade/infra/db/run.sh
 docker network create arcade_network
+cat .config/cni/net.d/arcade_network.conflist | jq '.plugins += [{ "type": "dnsname", "domainName": "arcade.withoracle.cloud", "capabilities": { "aliases": true } }]'
 bin/oci-cache-docker-run.sh
 cat containers/kafka/oci-kafka-compose.yml.template | envsubst > containers/kafka/oci-kafka-compose.yml
 bin/oci-kafka-cluster-build.sh
 cp containers/kafka/oci-kafka-events.Dockerfile.template containers/kafka/oci-kafka-events.Dockerfile
 bin/oci-kafka-cluster-run.sh
-# bin/oci-kafka-event-build.sh ${ORDS_HOSTNAME} ${BOOTSTRAP_SERVER} ${TOPIC}
-# bin/oci-kafka-event-run.sh
+bin/oci-kafka-event-build.sh ${ORDS_HOSTNAME} ${BOOTSTRAP_SERVER} ${TOPIC}
+bin/oci-kafka-event-run.sh
 cp containers/web/api-score.Dockerfile.template containers/web/api-score.Dockerfile
 chmod 755 bin/*.sh
 # bin/oci-fn-run.sh

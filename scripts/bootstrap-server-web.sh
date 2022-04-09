@@ -7,6 +7,7 @@ yum install -y yum-utils
 python3 -m pip install --upgrade pip
 # yum install -y docker-ce python3-devel
 yum install -y podman podman-docker
+yum install -y dnsmasq
 yum install -y python3-devel
 yum install -y git
 yum install -y zip
@@ -38,6 +39,9 @@ yum install -y golang
 yum install -y net-tools
 yum install -y java-1.8.0-openjdk-devel
 echo "  \"golang\" = \"docker.io/library/golang\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
-echo "  \"kafka_kafka\" = \"docker.io/library/kafka_kafka\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
 echo "  \"arm64v8/openjdk\" = \"docker.io/arm64v8/openjdk\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
 echo "  \"oraclecoherence/coherence-ce\" = \"docker.io/oraclecoherence/coherence-ce\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+mkdir /root/repos
+cd /root/repos
+git clone https://github.com/containers/dnsname
+make install PREFIX=/usr/local
