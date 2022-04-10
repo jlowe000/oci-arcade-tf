@@ -99,7 +99,7 @@ echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ infra/db/apex.sql" >> /h
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/score/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/events/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-app.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
-echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-config.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
+# echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init-crm-config.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 echo "exit | sqlplus ociarcade/${USER_PWD}@arcade_low @ apis/user/db/init.sql" >> /home/oracle/repos/oci-arcade/infra/db/run.sh
 chmod 755 /home/oracle/repos/oci-arcade/infra/db/run.sh
 # docker run --rm -it -v /opt/oracle:/opt/oracle -v /home/oracle:/home/oracle oraclelinux:7 /home/oracle/repos/oci-arcade/infra/db/run.sh
