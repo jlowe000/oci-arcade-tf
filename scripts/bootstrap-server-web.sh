@@ -1,40 +1,47 @@
 # this is a placeholder to put the scripts required to bootstrap the compute
-# this is a placeholder to put the scripts required to bootstrap the compute
-useradd -m -s /bin/bash oracle
-apt-get update
-apt-get -y install apt-transport-https ca-certificates curl gnupg lsb-release zip
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-apt-get update
-apt-get -y install docker-ce docker-ce-cli containerd.io
-apt-get -y install git
-apt-get -y install python3-pip
-apt-get -y install zip
+
+useradd oracle
+yum update -y
+yum install -y yum-utils
+# yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+python3 -m pip install --upgrade pip
+# yum install -y docker-ce python3-devel
+yum install -y podman podman-docker
+yum install -y dnsmasq
+yum install -y python3-devel
+yum install -y git
+yum install -y zip
+python3 -m pip install -IU docker-compose
 pip3 install oci-cli
-mkdir /opt/oracle
-cd /opt/oracle
-wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-basiclite-linux.x64-21.1.0.0.0.zip
-unzip instantclient-basiclite-linux.x64-21.1.0.0.0.zip
-wget https://download.oracle.com/otn_software/linux/instantclient/211000/instantclient-sqlplus-linux.x64-21.1.0.0.0.zip
-unzip instantclient-sqlplus-linux.x64-21.1.0.0.0.zip
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8080 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 8081 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 2377 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p tcp --dport 7946 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p udp --dport 7946 -j ACCEPT
-iptables -I INPUT 6 -m state --state NEW -p udp --dport 4789 -j ACCEPT
-netfilter-persistent save
-service docker start
-docker swarm init --advertise-addr 10.0.0.3
-docker swarm join-token -q worker > /tmp/swarm_token.txt
-docker network create -d overlay arcade_network --attachable
-usermod -a -G docker oracle
+# service docker start
+firewall-cmd --add-port 8080/tcp --permanent --zone=public
+firewall-cmd --add-port 8081/tcp --permanent --zone=public
+firewall-cmd --reload
+# usermod -a -G docker oracle
 mkdir /home/oracle/.oci
 mv /tmp/terraform_api_public_key.pem /home/oracle/.oci
 mv /tmp/terraform_api_key.pem /home/oracle/.oci
 mv /tmp/config /home/oracle/.oci
 chown -R oracle:oracle /home/oracle/.oci
 chmod 600 /home/oracle/.oci/terraform_api_key.pem
+mkdir /opt/oracle
+cd /opt/oracle
+wget https://download.oracle.com/otn_software/linux/instantclient/191000/instantclient-basic-linux.arm64-19.10.0.0.0dbru.zip
+unzip instantclient-basic-linux.arm64-19.10.0.0.0dbru.zip
+wget https://download.oracle.com/otn_software/linux/instantclient/191000/instantclient-sqlplus-linux.arm64-19.10.0.0.0dbru.zip
+unzip instantclient-sqlplus-linux.arm64-19.10.0.0.0dbru.zip
 mkdir /home/oracle/wallet
 mv /tmp/arcade-wallet.zip /home/oracle/wallet
 chown -R oracle:oracle /home/oracle/wallet
+yum install -y libaio
+yum install -y go
+yum install -y golang
+yum install -y net-tools
+yum install -y java-1.8.0-openjdk-devel
+echo "  \"golang\" = \"docker.io/library/golang\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+echo "  \"arm64v8/openjdk\" = \"docker.io/arm64v8/openjdk\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+echo "  \"oraclecoherence/coherence-ce\" = \"docker.io/oraclecoherence/coherence-ce\"" >> /etc/containers/registries.conf.d/000-shortnames.conf
+mkdir /root/repos
+cd /root/repos
+git clone https://github.com/containers/dnsname
+make install PREFIX=/usr/local

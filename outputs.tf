@@ -2,10 +2,6 @@ output "arcade-web_compute_ip_addr" {
   value = oci_core_instance.export_arcade-web.public_ip
 }
 
-output "arcade-kafka_compute_ip_addr" {
-  value = oci_core_instance.export_arcade-kafka.public_ip
-}
-
 output "arcade_adw_apex_url" {
   value = lookup(oci_database_autonomous_database.export_arcade.connection_urls[0],"apex_url")
 }
@@ -32,8 +28,4 @@ output "sqldev_url" {
 
 output "ssh-web_template" {
   value = "ssh -i ~/.ssh/id_rsa ubuntu@${oci_core_instance.export_arcade-web.public_ip}"
-}
-
-output "ssh-kafka_template" {
-  value = "ssh -i ~/.ssh/id_rsa ubuntu@${oci_core_instance.export_arcade-kafka.public_ip}"
 }

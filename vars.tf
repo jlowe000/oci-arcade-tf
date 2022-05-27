@@ -1,7 +1,7 @@
 variable user_id {}
 variable enable_api_key { default = "true" }
 variable tenancy_ocid { default = "ocid1.compartment.oc1..XXXX" }
-variable region { default = "ap-sydney-1" }
+variable region { default = "" }
 variable bucket_ns { default = "oci-bucket-ns" }
 variable compartment_ocid { default = "ocid1.compartment.oc1..XXXX" }
 variable compute_shape { default = "VM.Standard.E2.1.Micro" }

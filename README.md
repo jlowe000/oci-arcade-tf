@@ -35,18 +35,18 @@ This borrows a couple of open-source javascript games to extends and play with.
 
 ### Here are some references to help with filling in this information from your tenancy
 
-- The source-image-id is based upon the Canonical-Ubuntu-20.04-2021.05.13-0 image - here are the OCIDs for this image (which is different for each region) - defaulted to the au-sydney-1 region - https://docs.oracle.com/en-us/iaas/images/image/4d2aaffa-325f-4fe7-9e99-a5b1ee7f2cd1/. 
+- The source-image-id was based upon an Oracle-Linux-8.5 image - here are the OCIDs for this image (which is different for each region) - defaulted to the au-sydney-1 region - https://docs.oracle.com/en-us/iaas/images/image/f54bf63c-a3a7-46d0-bccf-6bacf6815994/. This has also been tested with Oracle Linux 8.4 and Ubuntu 20.04. The current version of the scripts / tooling is setup for Oracle Linux.
 - The tenancy OCID and user OCID are used for the automation using the Oracle APIs - here is a description of where in the OCI console to find this information - https://docs.oracle.com/en-us/iaas/Content/API/Concepts/apisigningkey.htm#five
 - The SSH key is a common element to infrastructure so you can log into the compute - use ie puttygen or ssh-keygen - https://docs.oracle.com/en-us/iaas/Content/Compute/Tasks/managingkeypairs.htm#Managing_Key_Pairs_on_Linux_Instances
-- The compute shape is used for the VM hosting the APIs as well as Oracle Functions (on docker). You can find out the different shapes here (VM.Standard.E2.1.Micro is the shape used as part of the Always-Free Tier) - https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm
+- The compute shape is used for the VM hosting the APIs as well as Oracle Functions (on docker). You can find out the different shapes here (VM.Standard.E2.1.Micro and VM.Standard.A1.Flex are the only shapes available as part of the Always-Free Tier) - https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm
 
 ## 2. Run the ORM and create a stack using the directory tf-arcade as the source
 
 - Provide the details above into the script
 - The outcome will be:
-  - A new VCN
-  - A new ADW
-  - 2 x VM.Standard.E2.1.Micro compute instances
+  - A VCN
+  - An ADW
+  - A compute instance (using VM.Standard.A1.Flex)
   - An object storage bucket (public)
   - Deploy a NodeJS expressjs server with score and event public APIs
   - Deploy a Oracle FN (python) with event API
@@ -59,8 +59,8 @@ This borrows a couple of open-source javascript games to extends and play with.
   - Space Invaders URL
 - Note:
   - In an Always-Free Tier, you make get issues when you "Apply" because (these are the common ones I found):
-    - There can only be a single VCN allowed in the tenancy.
-    - There can only be 2 x VM instances and 2 x Autonomous Database instances.
+    - There can only be 2 x VCN allowed in the tenancy.
+    - There can only be 2 x VM E1.Micro instances, 4 x A1.Flex OCPUs (with 24GB RAM) and 2 x Autonomous Database instances.
   - Need to "accept" exception in browser for the API calls (https://<compute-public-ip>:8081/event) - Without this step, API calls from game will fail with CERT exception
   - If you are wanting to "Destroy" the stack, you need to delete the folders in the oci-arcade bucket before running the Terraform destroy activity. Otherwise, the bucket will fail to be destroyed. You can delete the folders which will delete the underlying objects.
     - If you have the oci CLI configured you can do a bulk-delete with a single line. `oci os object bulk-delete -bn <bucket-name> -ns <namespace>`
