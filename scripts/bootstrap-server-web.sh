@@ -44,4 +44,4 @@ echo "  \"oraclecoherence/coherence-ce\" = \"docker.io/oraclecoherence/coherence
 mkdir /root/repos
 cd /root/repos
 git clone https://github.com/containers/dnsname
-make install PREFIX=/usr/local
+make all install PREFIX=/usr/local
