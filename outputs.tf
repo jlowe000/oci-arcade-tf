@@ -15,11 +15,7 @@ output "region" {
 }
 
 output "pacman_url" {
-  value = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.bucket_ns}/b/oci-arcade/o/pacman/index.htm"
-}
-
-output "spaceinvaders_url" {
-  value = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.bucket_ns}/b/oci-arcade/o/spaceinvaders/index.htm"
+  value = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.bucket_ns}/b/oci-arcade/o/consume-cloud/index.htm"
 }
 
 output "sqldev_url" {
