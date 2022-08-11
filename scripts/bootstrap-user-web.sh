@@ -1,28 +1,39 @@
 export USER_PWD=$1
+echo "export USER_PWD=\"$USER_PWD\"" > ~/arcade.env.sh
 shift
 export ORDS_HOSTNAME=`echo $1 | cut -d "/" -f 3`
+echo "export ORDS_HOSTNAME=\"$ORDS_HOSTNAME\"" >> ~/arcade.env.sh
 shift
 export APIGW_NAME=$1
+echo "export APIGW_NAME=\"$APIGW_NAME\"" >> ~/arcade.env.sh
 shift
 if [ "${APIGW_NAME}" != "" ]; then
   export API_HOSTNAME=$APIGW_NAME
 else
   export API_HOSTNAME=$1:8081
 fi
+echo "export API_HOSTNAME=\"$API_HOSTNAME\"" >> ~/arcade.env.sh
 shift
 export BOOTSTRAP_SERVER=$1
+echo "export BOOTSTRAP_SERVER=\"$BOOTSTRAP_SERVER\"" >> ~/arcade.env.sh
 shift
 export API_USER=$1
+echo "export API_USER=\"$API_USER\"" >> ~/arcade.env.sh
 shift
 export API_PASSWORD=$1
+echo "export API_PASSWORD=\"$API_PASSWORD\"" >> ~/arcade.env.sh
 shift
 export TOPIC=$1
+echo "export TOPIC=\"$TOPIC\"" >> ~/arcade.env.sh
 shift
 export API_KEY_ENABLED=$1
+echo "export API_KEY_ENABLED=\"$API_KEY_ENABLED\"" >> ~/arcade.env.sh
 shift
 export BUCKET_NS=$1
+echo "export BUCKET_NS=\"$BUCKET_NS\"" >> ~/arcade.env.sh
 shift
 export GIT_REPO=$1
+echo "export GIT_REPO=\"$GIT_REPO\"" >> ~/arcade.env.sh
 mkdir /home/oracle/bin
 echo 'export PATH=${PATH}:/home/oracle/bin' >> ~/.profile
 mkdir /home/oracle/repos
