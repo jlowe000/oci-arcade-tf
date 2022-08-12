@@ -14,7 +14,7 @@ output "region" {
   value = var.region
 }
 
-output "pacman_url" {
+output "game_url" {
   value = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.bucket_ns}/b/oci-arcade/o/consume-cloud/index.htm"
 }
 
@@ -23,5 +23,5 @@ output "sqldev_url" {
 }
 
 output "ssh-web_template" {
-  value = "ssh -i ~/.ssh/id_rsa ubuntu@${oci_core_instance.export_arcade-web.public_ip}"
+  value = "ssh -i ~/.ssh/id_rsa opc@${oci_core_instance.export_arcade-web.public_ip}"
 }
