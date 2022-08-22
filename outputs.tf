@@ -7,7 +7,7 @@ output "arcade_adw_apex_url" {
 }
 
 output "objectstorage_namespace" {
-  value = var.bucket_ns
+  value = local.bucket_ns
 }
 
 output "region" {
@@ -15,7 +15,7 @@ output "region" {
 }
 
 output "game_url" {
-  value = "https://objectstorage.${var.region}.oraclecloud.com/n/${var.bucket_ns}/b/oci-arcade/o/consume-cloud/index.htm"
+  value = "https://objectstorage.${var.region}.oraclecloud.com/n/${local.bucket_ns}/b/oci-arcade/o/consume-cloud/index.htm"
 }
 
 output "sqldev_url" {

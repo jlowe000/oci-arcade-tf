@@ -128,7 +128,7 @@ resource null_resource export_arcade-web_file_ociconfig {
   }
 
   provisioner file {
-    content     = "[DEFAULT]\nuser=${var.user_id}\nfingerprint=${oci_identity_api_key.current_user_api_key[count.index].fingerprint}\ntenancy=${var.tenancy_ocid}\nregion=${var.region}\nkey_file=/home/oracle/.oci/terraform_api_key.pem\n"
+    content     = "[DEFAULT]\nuser=${var.current_user_ocid}\nfingerprint=${oci_identity_api_key.current_user_api_key[count.index].fingerprint}\ntenancy=${var.tenancy_ocid}\nregion=${var.region}\nkey_file=/home/oracle/.oci/terraform_api_key.pem\n"
     destination = "/tmp/config"
   }
 }
@@ -180,7 +180,7 @@ resource null_resource export_arcade-web_remote-exec_oracle {
   provisioner remote-exec {
     inline = [
       "chmod +x /tmp/scripts/bootstrap-user-web.sh",
-      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-web.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} \"${var.apigw-dn}\" ${oci_core_instance.export_arcade-web.public_ip} ${var.bootstrap_server} \"${var.kafka_user}\" \"${var.kafka_password}\" ${var.topic} ${var.enable_api_key} ${var.bucket_ns} \"${var.git_repo}\"'"
+      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-web.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} \"${var.apigw-dn}\" ${oci_core_instance.export_arcade-web.public_ip} ${var.bootstrap_server} \"${var.kafka_user}\" \"${var.kafka_password}\" ${var.topic} ${var.enable_api_key} ${local.bucket_ns} \"${var.git_repo}\"'"
     ]
   }
 }
@@ -353,5 +353,5 @@ resource oci_core_default_security_list export_Default-Security-List-for-vcn-202
 resource oci_identity_api_key current_user_api_key {
   count = var.enable_api_key ? 1 : 0
   key_value = tls_private_key.public_private_key_pair.public_key_pem
-  user_id = var.user_id
+  user_id = var.current_user_ocid
 }

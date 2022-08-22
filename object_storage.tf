@@ -4,13 +4,13 @@ resource oci_objectstorage_bucket oci-arcade {
 
     compartment_id      = var.compartment_ocid
     name = "oci-arcade"
-    namespace = var.bucket_ns
+    namespace = data.oci_objectstorage_namespace.user_namespace.namespace
 
     #Optional
     access_type = "ObjectRead"
 
 }
 
-data oci_objectstorage_namespace export_namespace {
+data "oci_objectstorage_namespace" "user_namespace" {
   compartment_id = var.compartment_ocid
 }

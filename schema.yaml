@@ -7,15 +7,21 @@ version: "20200301"
 locale: "en"
 
 variableGroups:
-  - title: "General Configuration"
-    visible: true
+  - title: "Hidden"
+    visible: false
     variables:
     - tenancy_ocid
     - region
-    - compartment_ocid
     - bucket_ns
-    - apigw-dn
+    - current_user_ocid
+    - compartment_ocid
+    
+  - title: "General Configuration"
+    visible: true
+    variables:
     - git_repo
+    - apigw-dn
+    - enable_api_key
     
   - title: "Compute Configuration"
     visible: true  
@@ -34,12 +40,6 @@ variableGroups:
     - kafka_user
     - kafka_password
 
-  - title: "User Configuration"
-    visible: true  
-    variables:
-    - enable_api_key
-    - user_id
-    
 variables:
   is_free_tier:
     type: boolean
@@ -70,25 +70,25 @@ variables:
       compartmentId: ${compartment_ocid}
     title: "Arcade Web Compute"
     required: true
-    default: "VM.Standard.E2.1.Micro"
+    default: "VM.Standard.A1.Flex"
     visible: true
 
-  region:
-    type: oci:identity:region:name
-    required: true
-    visible: true
+#  region:
+#    type: oci:identity:region:name
+#    required: true
+#    visible: true
 
-  compartment_ocid:
-    type: oci:identity:compartment:id
-    required: true
-    title: "Compartment"
-    visible: true
+#  compartment_ocid:
+#    type: oci:identity:compartment:id
+#    required: true
+#    title: "Compartment"
+#    visible: true
 
-  tenancy_ocid:
-    type: string
-    required: true
-    title: "Tenancy"
-    visible: true
+#  tenancy_ocid:
+#    type: string
+#    required: true
+#    title: "Tenancy"
+#    visible: true
 
   apigw-dn:
     type: string
@@ -96,24 +96,23 @@ variables:
     title: "APIGW Domain Name"
     visible: true
 
-  user_id:
-    type: string
-    required: true
-    title: "User"
-    visible: true
+#   user_id:
+#    type: string
+#    required: true
+#    title: "User"
+#    visible: true
 
   custom_ssh_key:
     type: oci:core:ssh:publickey
     required: true
-    default: [""]
     pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
     title: "Arcade Web Compute SSH Key"
 
-  bucket_ns:
-    type: string
-    required: true
-    title: "Bucket Namespace"
-    visible: true
+#  bucket_ns:
+#    type: string
+#    required: true
+#    title: "Bucket Namespace"
+#    visible: true
 
   git_repo:
     type: string
