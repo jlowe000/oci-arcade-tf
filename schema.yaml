@@ -26,10 +26,10 @@ variableGroups:
   - title: "Compute Configuration"
     visible: true  
     variables:
+    - is_free_tier
     - compute_shape
     - arcade-web_source_image_id
     - custom_ssh_key
-    - is_free_tier
     - custom_adb_admin_password
 
   - title: "Kafka Configuration"
