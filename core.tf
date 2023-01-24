@@ -11,6 +11,57 @@ resource local_file ssh_key_private {
     command = "chmod 600 ${path.module}/id_rsa"
   }
 }
+
+data "template_file" "cloud-config" {
+  template = <<YAML
+#cloud-config
+runcmd:
+ - echo 'This instance was provisioned by Terraform.' >> /etc/motd
+users:
+ - default
+ - name: oracle
+   sudo: ALL=(ALL) NOPASSWD:ALL
+   shell: /bin/bash
+   no_create_home: false
+package_update: true
+packages:
+ - unzip
+ - zip
+YAML
+}
+
+#
+# * This module will create a shape-based Compute Instance. OCPU and memory values are defined by the provided value for shape.
+module "arcade-web" {
+  # source = "git::https://github.com/oracle-terraform-modules/terraform-oci-compute-instance" ## use this to test directly from Github HEAD
+  source = "oracle-terraform-modules/compute-instance/oci"
+  # general oci parameters
+  compartment_ocid = var.compartment_ocid
+  # compute instance parameters
+  ad_number = data.oci_identity_availability_domain.export_availability_domain.ad_number
+  instance_count        = var.instance_count
+  instance_display_name = var.instance_display_name
+  instance_state        = var.instance_state
+  instance_flex_memory_in_gbs = var.instance_flex_memory_in_gbs # only used if shape is Flex type
+  instance_flex_ocpus         = var.instance_flex_ocpus
+  shape                 = var.shape
+  source_ocid           = var.source_ocid
+  source_type           = var.source_type
+  cloud_agent_plugins   = var.cloud_agent_plugins
+  # operating system parameters
+  ssh_public_keys = "${var.ssh_public_keys}\n${tls_private_key.public_private_key_pair.public_key_openssh}"
+  # user_data = "${base64encode(data.template_file.cloud-config.rendered)}"
+  # networking parameters
+  assign_public_ip     = true
+  public_ip            = "EPHEMERAL" # NONE, RESERVED or EPHEMERAL
+  subnet_ocids         = [module.arcade_vcn.subnet_id["arcade_public_subnet"]]
+  # primary_vnic_nsg_ids = [oci_core_network_security_group.f1sim_nsg.id]
+  # storage parameters
+  boot_volume_backup_policy  = var.boot_volume_backup_policy
+  # block_storage_sizes_in_gbs = var.block_storage_sizes_in_gbs
+}
+
+/*
 resource oci_core_instance export_arcade-web {
   agent_config {
     is_management_disabled = "false"
@@ -67,13 +118,16 @@ resource oci_core_instance export_arcade-web {
   }
   state = "RUNNING"
 }
+*/
+
 resource null_resource export_arcade-web_file {
-  depends_on = [oci_core_instance.export_arcade-web]
+#  depends_on = [oci_core_instance.export_arcade-web]
+  depends_on = [module.arcade-web]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -83,13 +137,14 @@ resource null_resource export_arcade-web_file {
     destination = "/tmp"
   }
 }
+
 resource null_resource export_arcade-web_file_privatekey {
-  depends_on = [oci_core_instance.export_arcade-web]
+  depends_on = [module.arcade-web]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -99,13 +154,14 @@ resource null_resource export_arcade-web_file_privatekey {
     destination = "/tmp/terraform_api_key.pem"
   }
 }
+
 resource null_resource export_arcade-web_file_publickey {
-  depends_on = [oci_core_instance.export_arcade-web]
+  depends_on = [module.arcade-web]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -115,14 +171,15 @@ resource null_resource export_arcade-web_file_publickey {
     destination = "/tmp/terraform_api_public_key.pem"
   }
 }
+
 resource null_resource export_arcade-web_file_ociconfig {
-  depends_on = [oci_core_instance.export_arcade-web]
+  depends_on = [module.arcade-web]
   count = var.enable_api_key ? 1 : 0
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -132,13 +189,14 @@ resource null_resource export_arcade-web_file_ociconfig {
     destination = "/tmp/config"
   }
 }
+
 resource null_resource export_arcade-web_file_wallet {
   depends_on = [local_file.export_arcade_wallet_file]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -148,13 +206,14 @@ resource null_resource export_arcade-web_file_wallet {
     destination = "/tmp/arcade-wallet.zip"
   }
 }
+
 resource null_resource export_arcade-web_remote-exec {
   depends_on = [null_resource.export_arcade-web_file]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -166,13 +225,14 @@ resource null_resource export_arcade-web_remote-exec {
     ]
   }
 }
+
 resource null_resource export_arcade-web_remote-exec_oracle {
   depends_on = [null_resource.export_arcade-web_remote-exec,oci_database_autonomous_database.export_arcade]
   
   connection {
     agent       = false
     timeout     = "30m"
-    host        = oci_core_instance.export_arcade-web.public_ip
+    host        = module.arcade-web.public_ip_all_attributes[0]["ip_address"]
     user        = "opc"
     private_key = tls_private_key.public_private_key_pair.private_key_pem
   }
@@ -180,10 +240,60 @@ resource null_resource export_arcade-web_remote-exec_oracle {
   provisioner remote-exec {
     inline = [
       "chmod +x /tmp/scripts/bootstrap-user-web.sh",
-      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-web.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} \"${var.apigw-dn}\" ${oci_core_instance.export_arcade-web.public_ip} ${var.bootstrap_server} \"${var.kafka_user}\" \"${var.kafka_password}\" ${var.topic} ${var.enable_api_key} ${local.bucket_ns} \"${var.git_repo}\"'"
+      "sudo su - oracle bash -c '/tmp/scripts/bootstrap-user-web.sh ${var.custom_adb_admin_password} ${oci_database_autonomous_database.export_arcade.connection_urls[0]["apex_url"]} \"${var.apigw-dn}\" \"${module.arcade-web.public_ip[0]}\" ${var.bootstrap_server} \"${var.kafka_user}\" \"${var.kafka_password}\" ${var.topic} ${var.enable_api_key} ${local.bucket_ns} \"${var.git_repo}\"'"
     ]
   }
 }
+
+module "arcade_vcn" {
+  source = "oracle-terraform-modules/vcn/oci"
+
+  # general oci parameters
+  compartment_id = var.compartment_ocid
+  vcn_name = "arcade_vcn"
+
+  # vcn parameters
+  lockdown_default_seclist = false # boolean: true or false
+  create_internet_gateway  = true
+  subnets = {
+    arcade_public_vcn = {
+      name = "arcade_public_subnet"
+      type = "public"
+      cidr_block = "10.0.0.0/24"
+    }
+  }
+}
+
+resource "oci_core_network_security_group" "arcade_nsg" {
+  #Required
+  compartment_id = var.compartment_ocid
+  vcn_id         = module.arcade_vcn.vcn_id
+
+  #Optional
+  display_name = "arcade_nsg"
+}
+
+resource "oci_core_network_security_group_security_rule" "arcade_nsg_security_rule_1" {
+    #Required
+    network_security_group_id = oci_core_network_security_group.arcade_nsg.id
+    direction = "INGRESS"
+    protocol = "6"
+    #Optional
+    description = "Arcade APIs"
+    stateless = false
+    source_type = "CIDR_BLOCK"
+    source = var.local_cidr_block
+    tcp_options {
+        #Optional
+        destination_port_range {
+            #Required
+            min = 8080
+            max = 8082
+        }
+    }
+}
+
+/*
 resource oci_core_internet_gateway export_Internet-Gateway-vcn-20200918-0835 {
   compartment_id = var.compartment_ocid
   display_name = "OCI Arcade Internet Gateway"
@@ -192,6 +302,7 @@ resource oci_core_internet_gateway export_Internet-Gateway-vcn-20200918-0835 {
   }
   vcn_id = oci_core_vcn.export_vcn-20200918-0835.id
 }
+
 resource oci_core_subnet export_Public-Subnet {
   #availability_domain = <<Optional value not found in discovery>>
   cidr_block     = "10.0.0.0/24"
@@ -209,6 +320,7 @@ resource oci_core_subnet export_Public-Subnet {
   ]
   vcn_id = oci_core_vcn.export_vcn-20200918-0835.id
 }
+
 resource oci_core_vcn export_vcn-20200918-0835 {
   cidr_block     = "10.0.0.0/16"
   compartment_id = var.compartment_ocid
@@ -219,6 +331,7 @@ resource oci_core_vcn export_vcn-20200918-0835 {
   #ipv6cidr_block = <<Optional value not found in discovery>>
   #is_ipv6enabled = <<Optional value not found in discovery>>
 }
+
 resource oci_core_default_dhcp_options export_Default-DHCP-Options-for-vcn-20200918-0835 {
   display_name = "Default DHCP Options for OCI Arcade VCN"
   freeform_tags = {
@@ -240,6 +353,7 @@ resource oci_core_default_dhcp_options export_Default-DHCP-Options-for-vcn-20200
     type = "SearchDomain"
   }
 }
+
 resource oci_core_default_route_table export_Default-Route-Table-for-vcn-20200918-0835 {
   display_name = "Default Route Table for OCI Arcade VCN"
   freeform_tags = {
@@ -252,6 +366,7 @@ resource oci_core_default_route_table export_Default-Route-Table-for-vcn-2020091
     network_entity_id = oci_core_internet_gateway.export_Internet-Gateway-vcn-20200918-0835.id
   }
 }
+
 resource oci_core_default_security_list export_Default-Security-List-for-vcn-20200918-0835 {
   display_name = "Default Security List for OCI Arcade VCN"
   egress_security_rules {
@@ -350,6 +465,8 @@ resource oci_core_default_security_list export_Default-Security-List-for-vcn-202
   }
   manage_default_resource_id = oci_core_vcn.export_vcn-20200918-0835.default_security_list_id
 }
+*/
+
 resource oci_identity_api_key current_user_api_key {
   count = var.enable_api_key ? 1 : 0
   key_value = tls_private_key.public_private_key_pair.public_key_pem

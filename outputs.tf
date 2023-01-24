@@ -1,5 +1,5 @@
 output "arcade-web_compute_ip_addr" {
-  value = oci_core_instance.export_arcade-web.public_ip
+  value = try(module.arcade-web.public_ip[0], "")
 }
 
 output "arcade_adw_apex_url" {
@@ -23,5 +23,5 @@ output "sqldev_url" {
 }
 
 output "ssh-web_template" {
-  value = "ssh -i ~/.ssh/id_rsa opc@${oci_core_instance.export_arcade-web.public_ip}"
+  value = "ssh -i ~/.ssh/id_rsa opc@${module.arcade-web.public_ip[0]}"
 }

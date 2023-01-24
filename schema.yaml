@@ -15,6 +15,14 @@ variableGroups:
     - bucket_ns
     - current_user_ocid
     - compartment_ocid
+    - instance_count
+    - instance_state
+    - cloud_agent_plugins
+    - source_type
+    - boot_volume_backup_policy
+    - block_storage_sizes_in_gbs
+    - assign_public_ip
+    - public_ip
     
   - title: "General Configuration"
     visible: true
@@ -55,23 +63,23 @@ variables:
     default: true
     visible: true
 
-  arcade-web_source_image_id:
-    type: oci:core:image:id
-    dependsOn:
-      compartmentId: ${compartment_ocid}
-    required: true
-    visible: true
-    title: "Arcade Web Compute Image"
+#  arcade-web_source_image_id:
+#    type: oci:core:image:id
+#    dependsOn:
+#      compartmentId: ${compartment_ocid}
+#    required: true
+#    visible: true
+#    title: "Arcade Web Compute Image"
 
-  compute_shape:
-    type: oci:core:instanceshape:name
-    description: Select a shape
-    dependsOn:
-      compartmentId: ${compartment_ocid}
-    title: "Arcade Web Compute"
-    required: true
-    default: "VM.Standard.A1.Flex"
-    visible: true
+#  compute_shape:
+#    type: oci:core:instanceshape:name
+#    description: Select a shape
+#    dependsOn:
+#      compartmentId: ${compartment_ocid}
+#    title: "Arcade Web Compute"
+#    required: true
+#    default: "VM.Standard.A1.Flex"
+#    visible: true
 
 #  region:
 #    type: oci:identity:region:name
@@ -102,11 +110,11 @@ variables:
 #    title: "User"
 #    visible: true
 
-  custom_ssh_key:
-    type: oci:core:ssh:publickey
-    required: true
-    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
-    title: "Arcade Web Compute SSH Key"
+#  custom_ssh_key:
+#    type: oci:core:ssh:publickey
+#    required: true
+#    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+#    title: "Arcade Web Compute SSH Key"
 
 #  bucket_ns:
 #    type: string
@@ -148,3 +156,37 @@ variables:
     required: true
     title: "Topic"
     visible: true
+
+  source_ocid:
+    type: oci:core:image:id
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      operatingSystem: "Oracle Linux"      
+      operatingSystemVersion: "8"
+      shape: ${shape}
+
+  shape:
+    type: oci:core:instanceshape:name
+    description: Select a shape
+    dependsOn:
+      compartmentId: ${compartment_ocid}
+      default: "VM.Standard.A1.Flex"
+                                    
+  ssh_public_keys:
+    type: oci:core:ssh:publickey
+    pattern: "((^(ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)(,((ssh-rsa AAAAB3NzaC1yc2|ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNT|ecdsa-sha2-nistp384 AAAAE2VjZHNhLXNoYTItbmlzdHAzODQAAAAIbmlzdHAzOD|ecdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1Mj|ssh-ed25519 AAAAC3NzaC1lZDI1NTE5|ssh-dss AAAAB3NzaC1kc3)[0-9A-Za-z+\/]+[=]{0,3})( [^,]*)?)*$"
+
+  public_ip:
+    default: "EPHEMERAL"
+                                    
+  instance_display_name:
+    default: "F1Sim Cloud Ingestiono"
+
+  instance_flex_memory_in_gbs:
+    default: "6"
+
+  instance_flex_ocpus:
+    default: "1"
+
+  assign_public_ip:
+    default: true
